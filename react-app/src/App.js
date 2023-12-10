@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import './style/App.css';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
-import MySelect from "./components/UI/MySelect";
 import {Checkbox, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import Favorite from "@mui/icons-material/Favorite";
 import GetService from "./API/GetService";
-
+import NewMySelect from "./components/UI/NewMySelect";
 
 
 function App() {
@@ -60,8 +59,8 @@ function App() {
 
   return (
     <div className="App">
-      <div>
-       <MySelect
+
+       <NewMySelect
          value={selectedSort}
          onChange={sortPosts}
          defaultValue="Выберете валюту"
@@ -71,8 +70,6 @@ function App() {
            {value:"RUB", name:"RUB"},
          ]}
        />
-      </div>
-
 
       <TableContainer>
         <Table>
