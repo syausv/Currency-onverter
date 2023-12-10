@@ -1,21 +1,25 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './style/App.css';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import MySelect from "./components/UI/MySelect";
-import axios from "axios";
-import TableItems from "./components/TableItems";
 import {Checkbox, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import Favorite from "@mui/icons-material/Favorite";
+import GetService from "./API/GetService";
 
 
 
 function App() {
   const [posts, setPosts] = useState([])
 
+  useEffect(() =>{
+    fetchPosts()
+  }, [])
+
+
  async function fetchPosts() {
-    const responce = await axios.get('https://www.cbr-xml-daily.ru/daily_json.js')
-    console.log(responce.data.Valute);
-    const jsonPosts = responce.data.Valute;
+    const jsonPosts = await GetService.getAll();
+    console.log(jsonPosts);
+
     let dataValues = Object.values(jsonPosts);
     setPosts(dataValues);
     localStorage.setItem("EUR to RUB",JSON.stringify(jsonPosts.EUR));
@@ -24,6 +28,7 @@ function App() {
   }
 
    const [selectedSort, setSelectedSort] = useState('')
+
    const sortPosts = (sort) => {
      console.log(sort);
      setSelectedSort(sort);
@@ -32,8 +37,6 @@ function App() {
         const savedCurrencyEUR =  JSON.parse(localStorage.getItem('EUR to RUB'));
         const priceEUR = savedCurrencyEUR.Value;
          console.log(sort,priceEUR);
-         console.log(savedCurrencyValues);
-         console.log(savedCurrencyEUR);
          const newEUR = savedCurrencyValues.map((savedCurrencyValue) => (
            { ...savedCurrencyValue, Value: (savedCurrencyValue.Value/priceEUR).toFixed(4) }
          ));
@@ -44,8 +47,6 @@ function App() {
            const savedCurrencyUSD = JSON.parse(localStorage.getItem('USD to RUB'));
            const priceUSD = savedCurrencyUSD.Value;
            console.log(sort, priceUSD);
-           console.log(savedCurrencyValues);
-           console.log(savedCurrencyUSD);
            const newUSD = savedCurrencyValues.map((savedCurrencyValue) => (
              {...savedCurrencyValue, Value: (savedCurrencyValue.Value / priceUSD).toFixed(4)}
            ));
@@ -60,7 +61,6 @@ function App() {
   return (
     <div className="App">
       <div>
-        <button onClick={fetchPosts}>GET DATA</button>
        <MySelect
          value={selectedSort}
          onChange={sortPosts}
@@ -73,14 +73,6 @@ function App() {
        />
       </div>
 
-     {/* {
-        posts.map((post) =>
-        <PostItem post={post} key={post.id}/>
-      )}*/}
-
-      {
-          //<ValuteTable rows={posts}/>
-        }
 
       <TableContainer>
         <Table>
